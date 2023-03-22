@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%=title%></title>
     <link rel="stylesheet" href="../public/styles/index.css">
+    <link rel="stylesheet" href="../public/styles/form.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/ScrollMagic.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
@@ -15,12 +16,25 @@
         <img src="../public/img/fone-first.png">
         <div class="fone-inner-first">
           <img src="../public/img/fone-first-entry.png">
+
           <div class="send-your-contacts"><img src="../public/img/send-your-contacts.png"></div>
           <div class="master-contact-you"><img src="../public/img/matser-contact-you.png"></div>
+
+          <form action="/action_page.php" style="position: absolute; top: 23%; margin: 4%; width: 50%;">
+            <div class="form-fill-first">
+              <p style="color: #949494; text-align: left; line-height: 0;">Имя</p>
+              <input type="text" placeholder="Дмитрий Котов" name="name" required="">
+
+              <p style="color: #949494; text-align: left; line-height: 0;">Номер телефона</p>
+              <input type="text" placeholder="+7 (xxx) xxx-xx-xx" name="name" required="">
+
+              <p style="color: #949494; text-align: left; line-height: 0;">Email</p>
+              <input type="text" placeholder="testmail@gmail.com" name="email" required="">
+        
+              <button type="submit" class="btn">Продолжить</button>
+            </div>
+          </form>
         </div>
-        <div class="diplom-works-text"><img src="../public/img/diplom-works.png"></div>
-        <div class="help-writing-diploms-text"><img src="../public/img/help-writing-diplom.png"></div>
-      </div>
     </section>
     <section id="two"></section>
     <section id="three"></section>
