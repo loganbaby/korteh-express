@@ -1,37 +1,53 @@
-.container-form-first {
-    position: absolute;
-    right: 0;
-    margin: 20px;
-    max-width: 300px;
-    padding: 12px;
-    background-color: #D5A68240;
-}
-
 /* Full-width input fields */
 input[type=text] {
-    width: 100%;
+    width: 75%;
     padding: 15px;
     margin: 5px 0 20px 0;
     border: none;
+    border-radius: 8px;
+    font-size: medium;
     background: #f1f1f1;
 }
 
 input[type=text]:focus:focus {
-    background-color: #ddd;
     outline: none;
+    font-size: medium;
+    background-color: #ddd;
 }
 
 /* Set a style for the submit button */
-.btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 16px 20px;
-    border: none;
+.btn-form-first, .btn-form-six {
+    background-color: #FFFFFF;
+    color: #2F2F2F;
+    padding: 16px 10px;
+    border-color: #611212f6;
     cursor: pointer;
-    width: 100%;
+    width: 60%;
+    border-radius: 8px;
     opacity: 0.9;
 }
 
-.btn:hover {
+.btn-form-first:hover, .btn-form-six:hover {
     opacity: 1;
+    background-color: antiquewhite;
 }
+
+.text-area-field {
+    width: 70%;
+    position: absolute; 
+    background: #f1f1f1;
+    border: none;
+    border-radius: 8px;
+    left: 100%;
+    top: 55px;
+}
+
+.text-area-field:focus:focus {
+    outline: none;
+    background-color: #ddd;
+}
+
+::-webkit-input-placeholder { font-size: medium; }
+::-moz-placeholder { font-size: medium; }
+:-ms-input-placeholder { font-size: medium; }
+:-moz-placeholder { font-size: medium; }

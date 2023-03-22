@@ -15,7 +15,7 @@ var ctrl = new ScrollMagic.Controller({
   var wh = window.innerHeight;
    
   new ScrollMagic.Scene({
-    offset: wh*3
+    offset: wh*5
   })
-  .setClassToggle("section#four", "is-active")
+  .setClassToggle("section#six", "is-active")
   .addTo(ctrl);
