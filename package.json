@@ -2,9 +2,9 @@
   "name": "korteh-express-vite",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "./index.js",
   "scripts": {
-    "dev": "tsc && node ."
+    "dev": "node ."
   },
   "author": "",
   "license": "ISC",
