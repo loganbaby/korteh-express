@@ -54,7 +54,7 @@ section#six {
 
 .fone-inner-first {
   margin: auto;
-  display: inline-flex;
+  display: flex;
   bottom: 15%;
   left: 17%;
   position: absolute;
