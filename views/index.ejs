@@ -10,10 +10,16 @@
     <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Montserrat'>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/ScrollMagic.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.7/plugins/debug.addIndicators.min.js"></script>
   </head>
   <body>
+    <header>
+      <div style="display: flex;">
+        <img src="/img/header-web.png">
+        <div style="position: absolute; right: 15%; top: 1.7%;">
+          <a href="login"><img src="/img/login.png"></a>
+        </div>
+      </div>
+    </header>
     <section id="one">
       <div class="verticalcenter">
         <img src="/img/fone-first.png">
@@ -27,7 +33,7 @@
           <div class="send-your-contacts"><img src="/img/send-your-contacts.png"></div>
           <div class="master-contact-you"><img src="/img/matser-contact-you.png"></div>
 
-          <form method="POST" action="page" style="position: absolute; top: 27%; margin: 1%; width: 50%;">
+          <form method="POST" action="send-email-response" style="position: absolute; top: 27%; margin: 1%; width: 50%;">
             <div class="form-fill-first">
               <p style="color: #949494; text-align: left; margin: 0 10% 2%; line-height: 0; font-size: small;">Имя</p>
               <input type="text" placeholder="Дмитрий Котов" name="name" required="">
@@ -55,9 +61,14 @@
         <img class="item-sixth" src="/img/how-we-works.png">
         <img class="item-sixth" src="/img/table-six.png">
         
-        <form method="POST" action="send-response" class="item-sixth">
-          <button type="submit" class="btn-form-six" style="width: 100%;">Отправить заявку</button>
-        </form>
+        <script type="text/javascript">
+          function scrollToOneSection() {
+            const el = document.getElementById('one');
+            el.scrollIntoView({behavior: "smooth"});
+          }
+        </script>
+
+        <button class="btn-form-six" style="width: 10%;" onclick="scrollToOneSection()">Отправить заявку</button>
       </div>
     </section>
     <section id="seven">
@@ -117,6 +128,5 @@
         </div>
       </footer>
     </section>
-    <script type="text/javascript" src="/scripts/mg_scroll.js"></script>
   </body>
 </html>
