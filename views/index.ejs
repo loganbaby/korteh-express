@@ -21,6 +21,10 @@
       </div>
     </header>
     <section id="one">
+      <canvas width="640" height="480" id="fireworks-canvas" style="position: absolute; fill: rgb(100,150,185); width: 100vw; height: 100vh;"></canvas>
+      <script src="/scripts/fireshow.js"></script>
+      <script src="/scripts/firework.js"></script>
+    
       <div class="verticalcenter">
         <img src="/img/fone-first.png">
 
@@ -33,7 +37,7 @@
           <div class="send-your-contacts"><img src="/img/send-your-contacts.png"></div>
           <div class="master-contact-you"><img src="/img/matser-contact-you.png"></div>
 
-          <form method="POST" action="send-email-response" style="position: absolute; top: 27%; margin: 1%; width: 50%;">
+          <form method="POST" action="emailentry" style="position: absolute; top: 27%; margin: 1%; width: 50%;">
             <div class="form-fill-first">
               <p style="color: #949494; text-align: left; margin: 0 10% 2%; line-height: 0; font-size: small;">Имя</p>
               <input type="text" placeholder="Дмитрий Котов" name="name" required="">
