@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Montserrat'>
+    <title><%=title%></title>
+  </head>
+
+  <body style="background-color: #F6F6F6; font-family: Montserrat;">
+    <header>
+        <div style="display: flex;">
+            <img src="/img/header-web.png">
+            <div style="position: absolute; right: 15%; top: 1.7%;">
+            <a href="login"><img src="/img/login.png"></a>
+            </div>
+        </div>
+    </header>
+    <form method="POST" action="register">
+        <div style="display: flex; width: 30vw; height: 60vh; margin: auto; margin-top: 6.5%; background-color: #FFFF;">
+            <h2><b><p style="position: absolute; margin: 0; left: 50vw;">Регистрация</p></b></h2>
+
+            <p style="position: absolute; top: 25%; left: 40%;">Логин</p>
+            <input type="text" placeholder="dmitrykotov89" name="login" required="" style="width: 20%; height: 4%; top: 30%; left: 39%; position: absolute;">
+            
+            <p style="position: absolute; top: 35%; left: 40%;">Пароль</p>
+            <input type="password" placeholder="password" name="password" required="" style="width: 20%; height: 4%; top: 40%; left: 39%; position: absolute;">
+
+            <p style="position: absolute; top: 45%; left: 40%;">Подтвердите пароль</p>
+            <input type="password" placeholder="password" name="passwordconfirm" required="" style="width: 20%; height: 4%; top: 50%; left: 39%; position: absolute;">
+
+            <p style="position: absolute; top: 55%; left: 40%;">Email</p>
+            <input type="text" placeholder="dmitrykotov89@icloud.com" name="email" required="" style="width: 20%; height: 4%; top: 60%; left: 39%; position: absolute;">
+
+            <button type="submit" style="position: absolute; top: 75%; left: 40%; width: 100px; height: 50px;">Зарегаться</button>
+        </div>
+    </form>
+  </body>
+</html>

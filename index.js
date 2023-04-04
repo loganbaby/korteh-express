@@ -1,19 +1,29 @@
 'use strict'
 
 require('dotenv').config();                            // create .env file with dependencies
-console.log(process.env);
+
+if (process.env.DEBUG == 'true') {
+  console.log(process.env);
+}
 
 const EMAIL_AUTH = process.env.EMAIL_AUTH;
 const EMAIL_PASS_AUTH = process.env.EMAIL_PASS_AUTH;
 
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+const db = require('./src/db');
+db.authenticate().catch(error => console.error(error));
 
+const express = require('express');
+const session = require('express-session');
+
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const flash = require('connect-flash');
+
+const path = require('path');
 const nodemailer = require("nodemailer");
 
-const pgp = require("pg-promise")(/*options*/);
-const db = pgp('postgres://logbaby:666@localhost:3000/korteh-project');     // path to your postgreSQL database
+const bcrypt = require("bcrypt");
 
 const app = express();
 
@@ -23,6 +33,15 @@ const urlencodedParser = bodyParser.urlencoded({
 
 const port = 3000;
 
+const Users = require('./models/users');
+
+async function initDatabase() {
+  await Users.sync({ force: true });
+  console.log('Table Users created [force] again!');
+}
+
+initDatabase();
+
 app.set('views', path.resolve('.', 'views'));
 app.set("view engine", "ejs");
 console.log('path to /views: ' + path.resolve('.', 'views/'));
@@ -30,11 +49,25 @@ console.log('path to /views: ' + path.resolve('.', 'views/'));
 app.use(express.static(path.resolve('.', 'public')));
 console.log('path to /public: ' + path.resolve('.', 'public/'));
 
-app.get('/emailentry', urlencodedParser, function (request, response) {
-    console.log('got -> /emailentry');
-});
+app.use(cookieParser());
+app.use(bodyParser.json());
 
-app.post('/emailentry', urlencodedParser, function (request, response) {           // handler of form to send mail response
+app.use(session({
+  cookie: { maxAge: 60000 },
+  secret: 'codeworkrsecret',
+  saveUninitialized: false,
+  resave: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+app.use(flash());
+
+app.post('/emailentry', urlencodedParser, async function (request, response) {           // handler of form to send mail response
+  console.log('got -> /emailentry');
+
     const output = `
         <p>You have a new contact request</p>
         <h3>Contact Details</h3>
@@ -68,7 +101,7 @@ app.post('/emailentry', urlencodedParser, function (request, response) {        
     return console.log('Error: ' + e.name + ":" + e.message);
   }
 
-  let mailOptions = {
+  const mailOptions = {
     from: 'dmitrykotov89@yandex.ru', // sender address
     to: `${request.body.email}`, // list of receivers
     subject: 'Новая заявка с сайта Korteh', // Subject line
@@ -88,7 +121,7 @@ app.post('/emailentry', urlencodedParser, function (request, response) {        
     response.redirect('/#firework');
 });
 
-app.get('/login', urlencodedParser, function (request, response) {
+app.get('/login', urlencodedParser, async function (request, response) {
     console.log('got -> /login');
 
     response.render('login', {
@@ -96,7 +129,60 @@ app.get('/login', urlencodedParser, function (request, response) {
     });
 });
 
-app.use('/', function (request, response, next) {
+app.post('/register', urlencodedParser, async function (request, response) {
+  console.log('got -> /register');
+
+  if (await Users.findOne({where: { email: request.body.email }})) {
+    console.log('User with this email already exists! Try another email data.');
+    response.status(400).json({ error: "User with this email already exists! Try another email data." });
+  } else if (await Users.findOne({where: { login: request.body.login }})) {
+    console.log('User with this login already exists! Try another login data.');
+    response.status(400).json({ error: "User with this login already exists! Try another login data" });
+  }
+
+  if (request.body.password == request.body.passwordconfirm) {
+    const salt = await bcrypt.genSalt(10);
+    let bcryptPassword = await bcrypt.hash(request.body.password, salt);
+
+    let result = await Users.create({
+      login: request.body.login,
+      email: request.body.email,
+      password: bcryptPassword
+    });
+
+    if (result) {
+      response.render('login', {
+        title: 'Login page demo'
+      });
+    } else {
+      console.log('Adding to db failed. Please fill the form correctly!');
+    }
+  } else {
+    response.status(400).json({ error: "Password not comfirmed" });
+  }
+});
+
+app.post('/login-into', urlencodedParser, async function (request, response) {
+  console.log('got -> /login-into');
+
+  const user = await Users.findOne({where: { login: request.body.login }});
+
+  console.log(await Users.findOne({where: { login: request.body.login }}));
+
+  if (user != null || user != undefined) { console.log(await bcrypt.compare(request.body.password, user.password)); }
+
+  if ((user != null && user != undefined) && await bcrypt.compare(request.body.password, user.password)) {
+    response.render('me', {
+      title: 'My account'
+    });
+  } else {
+    response.render('register', {
+      title: 'Register page demo'
+    });
+  }
+});
+
+app.use('/', async function (request, response, next) {
     response.render('index', {
         title: 'Студенческий портал demo'
     });
