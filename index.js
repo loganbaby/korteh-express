@@ -13,7 +13,17 @@ const db = require('./src/db');
 db.authenticate().catch(error => console.error(error));
 
 const express = require('express');
+const app = express();
 const session = require('express-session');
+
+const formatMessage = require('./helpers/messages');
+const { userJoin, getCurrentUser, userLeave, getRoomUsers } = require('./helpers/users');
+
+const http = require('http');
+const socketio = require('socket.io');
+const server = http.createServer(app);
+const io = socketio(server);
+const botName = 'Korteh chat demo';
 
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
@@ -24,8 +34,6 @@ const path = require('path');
 const nodemailer = require("nodemailer");
 
 const bcrypt = require("bcrypt");
-
-const app = express();
 
 const urlencodedParser = bodyParser.urlencoded({
     extended: false,
@@ -129,6 +137,22 @@ app.get('/login', urlencodedParser, async function (request, response) {
     });
 });
 
+app.get('/chat', urlencodedParser, async function (request, response) {
+  console.log('got -> /chat');
+
+  response.render('chat', {
+      title: 'Chat page  demo'
+  });
+});
+
+app.get('/messages_wrapper', urlencodedParser, async function (request, response) {
+  console.log('got -> /messages_wrapper');
+
+  response.render('messages_wrapper', {
+      title: 'Chat page  demo'
+  });
+});
+
 app.post('/register', urlencodedParser, async function (request, response) {
   console.log('got -> /register');
 
@@ -182,10 +206,54 @@ app.post('/login-into', urlencodedParser, async function (request, response) {
   }
 });
 
+io.on('connection', socket => {                              // listener for next connecting
+  socket.on('joinRoom', ({username, room}) => {
+      const user = userJoin(socket.id, username, room);
+
+      socket.join(user.room);
+
+      // Приветсвие при подключении
+      socket.emit('message', formatMessage(botName, 'Welcome to Socket.io chat app'));
+
+      // broadcast вещание всем кроме user
+      socket.broadcast
+          .to(user.room)
+          .emit('message', formatMessage(botName, `A ${user.username} has joined the chat`));
+
+      // отправить информацию о юзерах и комнате
+      io.to(user.room).emit('roomUsers', {
+          room: user.room,
+          users: getRoomUsers(user.room)
+      })
+  });
+
+  // listener chatMessage от клиента
+  socket.on('chatMessage', (msg) => {
+      const user = getCurrentUser(socket.id);
+
+      io.to(user.room).emit('message', formatMessage(user.username, msg));
+  });
+
+  // listener disconnect client
+  socket.on('disconnect', () => {
+      const user = userLeave(socket.id);
+
+      if (user) {
+          io.to(user.room).emit('message', formatMessage(botName, `A ${user.username} has left the chat`));
+
+          // отправить информацию о юзерах и комнате
+          io.to(user.room).emit('roomUsers', {
+              room: user.room,
+              users: getRoomUsers(user.room)
+          })
+      }
+  });
+});
+
 app.use('/', async function (request, response, next) {
     response.render('index', {
         title: 'Студенческий портал demo'
     });
 });
 
-app.listen(port, () => console.log(`Server started... on port ${port}`));
+server.listen(port, () => console.log(`Server started... on port ${port}`));

@@ -4,7 +4,8 @@
   "description": "",
   "main": "./index.js",
   "scripts": {
-    "dev": "node ."
+    "dev": "nodemon .",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
@@ -17,12 +18,15 @@
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "http": "^0.0.1-security",
     "nodemailer": "^6.9.1",
+    "nodemon": "^2.0.22",
     "passport": "^0.6.0",
     "pg": "^8.10.0",
     "pg-hstore": "^2.3.4",
     "pg-promise": "^11.4.3",
-    "sequelize": "^6.30.0"
+    "sequelize": "^6.30.0",
+    "socket.io": "^4.6.1"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.16"
