@@ -9,6 +9,16 @@ if (process.env.DEBUG == 'true') {
 const EMAIL_AUTH = process.env.EMAIL_AUTH;
 const EMAIL_PASS_AUTH = process.env.EMAIL_PASS_AUTH;
 
+const winston = require('winston');
+const logging = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    new winston.transports.File({ filename: './.log/messages.log', level: 'info' }),
+  ],
+});
+
 const db = require('./src/db');
 db.authenticate().catch(error => console.error(error));
 
@@ -211,37 +221,29 @@ io.on('connection', socket => {                              // listener for nex
       const user = userJoin(socket.id, username, room);
 
       socket.join(user.room);
+      socket.emit('message', formatMessage(botName, 'Welcome to Korteh demo chat'));
+      logging.info(`[${new Date().toLocaleString()}] User ${user.username} entered into [chat] ${user.room}`);
 
-      // Приветсвие при подключении
-      socket.emit('message', formatMessage(botName, 'Welcome to Socket.io chat app'));
+      socket.broadcast.to(user.room).emit('message', formatMessage(botName, `A ${user.username} has joined the chat`));
 
-      // broadcast вещание всем кроме user
-      socket.broadcast
-          .to(user.room)
-          .emit('message', formatMessage(botName, `A ${user.username} has joined the chat`));
-
-      // отправить информацию о юзерах и комнате
       io.to(user.room).emit('roomUsers', {
           room: user.room,
           users: getRoomUsers(user.room)
       })
   });
 
-  // listener chatMessage от клиента
   socket.on('chatMessage', (msg) => {
       const user = getCurrentUser(socket.id);
 
       io.to(user.room).emit('message', formatMessage(user.username, msg));
+      logging.info(`[${new Date().toLocaleString()}] ${user.username} - ${msg}`);
   });
 
-  // listener disconnect client
   socket.on('disconnect', () => {
       const user = userLeave(socket.id);
 
       if (user) {
           io.to(user.room).emit('message', formatMessage(botName, `A ${user.username} has left the chat`));
-
-          // отправить информацию о юзерах и комнате
           io.to(user.room).emit('roomUsers', {
               room: user.room,
               users: getRoomUsers(user.room)
